@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>红利ETF定投计划工具 - 512890</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #2563eb;
+      --primary-soft: #eff6ff;
+      --green: #059669;
+      --red: #dc2626;
+      --orange: #ea580c;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      padding: 28px;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.86);
+      max-width: 900px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    @media (max-width: 900px) {
+      .span-4, .span-6, .span-8 { grid-column: span 12; }
+      .hero h1 { font-size: 24px; }
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0 0 14px;
+    }
+
+    h3 {
+      font-size: 15px;
+      margin: 16px 0 8px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 620px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    button.secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    button.ghost {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .metric {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .metric .label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .metric .value {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .value.red { color: var(--red); }
+    .value.green { color: var(--green); }
+    .value.orange { color: var(--orange); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f3f4f6;
+      color: #374151;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pill.buy { background: #ecfdf5; color: var(--green); }
+    .pill.sell { background: #fef2f2; color: var(--red); }
+    .pill.hold { background: #f3f4f6; color: #4b5563; }
+    .pill.warn { background: #fff7ed; color: var(--orange); }
+
+    .note {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 8px 0 0;
+    }
+
+    .warning {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .btn-row, .warning { display: none; }
+      .card, .hero { box-shadow: none; }
+      .container { max-width: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>红利ETF定投计划工具：512890</h1>
+      <p>用于制定“未来一年投入 X”的月中/月末双定投、下跌增强加仓、上涨止盈与再平衡现金池计划。所有数据均可手动输入，适合纯静态本地使用。</p>
+    </section>
+
+    <div class="grid">
+      <section class="card span-4">
+        <h2>一、输入参数</h2>
+        <div class="form-grid">
+          <div>
+            <label>年度总投入 X（元）</label>
+            <input id="totalAmount" type="number" value="120000" min="0" step="1000" />
+          </div>
+          <div>
+            <label>ETF代码</label>
+            <input id="etfCode" type="text" value="512890" />
+          </div>
+          <div>
+            <label>当前价格 P</label>
+            <input id="currentPrice" type="number" value="1.153" min="0" step="0.001" />
+          </div>
+          <div>
+            <label>阶段高点 H</label>
+            <input id="highPrice" type="number" value="1.248" min="0" step="0.001" />
+          </div>
+          <div>
+            <label>基础定投比例</label>
+            <input id="baseRatio" type="number" value="60" min="0" max="100" step="1" />
+          </div>
+          <div>
+            <label>增强资金比例</label>
+            <input id="boostRatio" type="number" value="25" min="0" max="100" step="1" />
+          </div>
+          <div>
+            <label>再平衡资金比例</label>
+            <input id="rebalanceRatio" type="number" value="15" min="0" max="100" step="1" />
+          </div>
+          <div>
+            <label>预计持仓平均成本 C</label>
+            <input id="avgCost" type="number" value="1.153" min="0" step="0.001" />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button onclick="calculate()">重新计算</button>
+          <button class="secondary" onclick="saveSettings()">保存参数</button>
+          <button class="ghost" onclick="resetDefaults()">恢复默认</button>
+          <button class="ghost" onclick="window.print()">打印/另存PDF</button>
+        </div>
+        <p class="note">提示：阶段高点 H 建议每月第一个交易日更新一次，口径为最近120个交易日最高收盘价。</p>
+      </section>
+
+      <section class="card span-8">
+        <h2>二、核心结果</h2>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="label">当前回撤</div>
+            <div id="drawdown" class="value red">-</div>
+          </div>
+          <div class="metric">
+            <div class="label">每月定投总额</div>
+            <div id="monthlyBase" class="value">-</div>
+          </div>
+          <div class="metric">
+            <div class="label">每次定投金额</div>
+            <div id="semiMonthlyBase" class="value">-</div>
+          </div>
+          <div class="metric">
+            <div class="label">每档增强加仓</div>
+            <div id="boostEach" class="value orange">-</div>
+          </div>
+        </div>
+        <div class="warning" style="margin-top:14px;">
+          本工具只用于执行纪律管理和测算，不构成投资建议。ETF仍属于权益资产，存在亏损和长期回撤风险。
+        </div>
+
+        <h3>资金池拆分</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>资金池</th><th>比例</th><th>金额</th><th>用途</th></tr>
+            </thead>
+            <tbody id="fundPools"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card span-12">
+        <h2>三、未来12个月：月中/月末双定投计划</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>月份</th>
+                <th>月中动作（15日前后）</th>
+                <th>月中金额</th>
+                <th>月末动作（25-28日）</th>
+                <th>月末金额</th>
+                <th>本月合计</th>
+              </tr>
+            </thead>
+            <tbody id="monthlyPlan"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card span-6">
+        <h2>四、下跌增强加仓规则</h2>
+        <p class="note">基于阶段高点 H。若价格首次触及对应价位，则动用增强资金加仓。每档只触发一次。</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>触发回撤</th><th>触发价格</th><th>动作</th><th>金额</th></tr>
+            </thead>
+            <tbody id="downRules"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card span-6">
+        <h2>五、上涨止盈规则</h2>
+        <p class="note">基于整体持仓平均成本 C。止盈资金进入“再平衡现金池”，不离场。</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>相对成本涨幅</th><th>触发价格</th><th>动作</th><th>卖出比例</th></tr>
+            </thead>
+            <tbody id="upRules"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card span-12">
+        <h2>六、再平衡现金池重新投入规则</h2>
+        <p class="note">再平衡池 = 初始15%X + 止盈卖出资金。只有在上涨止盈后，或你希望保留长期低位购买力时使用。</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>从新阶段高点回撤</th><th>投入比例</th><th>按初始再平衡资金估算金额</th><th>说明</th></tr>
+            </thead>
+            <tbody id="rebalanceRules"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card span-12">
+        <h2>七、每月执行清单</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>时间</th><th>必须执行事项</th><th>检查事项</th><th>备注</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>每月第一个交易日</td>
+                <td><span class="pill hold">更新 H</span></td>
+                <td>计算最近120交易日最高收盘价</td>
+                <td>未来一个月下跌补仓线均基于新H</td>
+              </tr>
+              <tr>
+                <td>每月15日前后</td>
+                <td><span class="pill buy">定投</span></td>
+                <td>买入2.5%X；检查是否触发下跌增强</td>
+                <td>遇节假日顺延至下一个交易日</td>
+              </tr>
+              <tr>
+                <td>每月25-28日</td>
+                <td><span class="pill buy">定投</span></td>
+                <td>买入2.5%X；检查是否触发下跌增强</td>
+                <td>避免月末最后一天流动性异常，可选择25-28日</td>
+              </tr>
+              <tr>
+                <td>每周一次</td>
+                <td><span class="pill sell">止盈检查</span></td>
+                <td>检查整体收益率是否达到+30%、+40%、+50%</td>
+                <td>触发后只部分卖出，不清仓</td>
+              </tr>
+              <tr>
+                <td>止盈后出现回撤</td>
+                <td><span class="pill warn">再平衡</span></td>
+                <td>按-10%、-15%、-20%、-25%、-30%分批投入再平衡池</td>
+                <td>形成高位回收、低位买回闭环</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <p class="footer-note">版本：单文件静态版。数据需手动更新；参数会保存到浏览器 localStorage。</p>
+  </div>
+
+  <script>
+    const defaults = {
+      totalAmount: 120000,
+      etfCode: '512890',
+      currentPrice: 1.153,
+      highPrice: 1.248,
+      baseRatio: 60,
+      boostRatio: 25,
+      rebalanceRatio: 15,
+      avgCost: 1.153
+    };
+
+    function money(n) {
+      return Number(n).toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+    }
+
+    function price(n) {
+      return Number(n).toFixed(3);
+    }
+
+    function pct(n) {
+      return `${Number(n).toFixed(2)}%`;
+    }
+
+    function readInputs() {
+      const get = id => document.getElementById(id).value;
+      return {
+        totalAmount: Number(get('totalAmount')) || 0,
+        etfCode: get('etfCode') || '512890',
+        currentPrice: Number(get('currentPrice')) || 0,
+        highPrice: Number(get('highPrice')) || 0,
+        baseRatio: Number(get('baseRatio')) || 0,
+        boostRatio: Number(get('boostRatio')) || 0,
+        rebalanceRatio: Number(get('rebalanceRatio')) || 0,
+        avgCost: Number(get('avgCost')) || 0
+      };
+    }
+
+    function calculate() {
+      const v = readInputs();
+      const baseAmount = v.totalAmount * v.baseRatio / 100;
+      const boostAmount = v.totalAmount * v.boostRatio / 100;
+      const rebalanceAmount = v.totalAmount * v.rebalanceRatio / 100;
+      const monthlyBase = baseAmount / 12;
+      const semiMonthlyBase = monthlyBase / 2;
+      const boostEach = boostAmount / 5;
+      const drawdown = v.highPrice > 0 ? (v.currentPrice - v.highPrice) / v.highPrice * 100 : 0;
+
+      document.getElementById('drawdown').textContent = pct(drawdown);
+      document.getElementById('monthlyBase').textContent = `¥${money(monthlyBase)}`;
+      document.getElementById('semiMonthlyBase').textContent = `¥${money(semiMonthlyBase)}`;
+      document.getElementById('boostEach').textContent = `¥${money(boostEach)}`;
+
+      document.getElementById('fundPools').innerHTML = `
+        <tr><td>基础定投资金</td><td>${v.baseRatio}%</td><td>¥${money(baseAmount)}</td><td>每月月中/月末各投入一半</td></tr>
+        <tr><td>下跌增强资金</td><td>${v.boostRatio}%</td><td>¥${money(boostAmount)}</td><td>价格相对H回撤达到阈值时分5档投入</td></tr>
+        <tr><td>再平衡资金</td><td>${v.rebalanceRatio}%</td><td>¥${money(rebalanceAmount)}</td><td>初始保持现金；止盈资金也进入该池，等待回撤再投入</td></tr>
+      `;
+
+      renderMonthlyPlan(semiMonthlyBase);
+      renderDownRules(v.highPrice, boostEach);
+      renderUpRules(v.avgCost);
+      renderRebalanceRules(rebalanceAmount);
+    }
+
+    function renderMonthlyPlan(amount) {
+      const rows = [];
+      const start = new Date();
+      for (let i = 0; i < 12; i++) {
+        const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
+        const label = `${d.getFullYear()}年${d.getMonth() + 1}月`;
+        rows.push(`
+          <tr>
+            <td>${label}</td>
+            <td><span class="pill buy">买入</span> 月中定投</td>
+            <td>¥${money(amount)}</td>
+            <td><span class="pill buy">买入</span> 月末定投</td>
+            <td>¥${money(amount)}</td>
+            <td>¥${money(amount * 2)}</td>
+          </tr>
+        `);
+      }
+      document.getElementById('monthlyPlan').innerHTML = rows.join('');
+    }
+
+    function renderDownRules(H, amount) {
+      const levels = [10, 15, 20, 25, 30];
+      document.getElementById('downRules').innerHTML = levels.map((lv, idx) => {
+        const trigger = H * (1 - lv / 100);
+        return `
+          <tr>
+            <td>-${lv}%</td>
+            <td>${price(trigger)}</td>
+            <td><span class="pill buy">第${idx + 1}档增强加仓</span></td>
+            <td>¥${money(amount)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderUpRules(C) {
+      const levels = [30, 40, 50];
+      document.getElementById('upRules').innerHTML = levels.map((lv, idx) => {
+        const trigger = C * (1 + lv / 100);
+        return `
+          <tr>
+            <td>+${lv}%</td>
+            <td>${price(trigger)}</td>
+            <td><span class="pill sell">第${idx + 1}次部分止盈</span></td>
+            <td>卖出总仓位10%</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderRebalanceRules(rebalanceAmount) {
+      const levels = [10, 15, 20, 25, 30];
+      const each = rebalanceAmount / 5;
+      document.getElementById('rebalanceRules').innerHTML = levels.map((lv, idx) => `
+        <tr>
+          <td>-${lv}%</td>
+          <td>再平衡池20%</td>
+          <td>¥${money(each)}</td>
+          <td>第${idx + 1}档重新投入；若有止盈资金，按再平衡池实际余额的20%计算</td>
+        </tr>
+      `).join('');
+    }
+
+    function saveSettings() {
+      localStorage.setItem('dividendEtfPlanner', JSON.stringify(readInputs()));
+      alert('参数已保存到本地浏览器。');
+    }
+
+    function loadSettings() {
+      const raw = localStorage.getItem('dividendEtfPlanner');
+      const data = raw ? JSON.parse(raw) : defaults;
+      Object.keys(defaults).forEach(key => {
+        const el = document.getElementById(key);
+        if (el) el.value = data[key] ?? defaults[key];
+      });
+      calculate();
+    }
+
+    function resetDefaults() {
+      localStorage.removeItem('dividendEtfPlanner');
+      Object.keys(defaults).forEach(key => {
+        const el = document.getElementById(key);
+        if (el) el.value = defaults[key];
+      });
+      calculate();
+    }
+
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', calculate);
+    });
+
+    loadSettings();
+  </script>
+</body>
+</html>

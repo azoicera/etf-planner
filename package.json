@@ -1,0 +1,27 @@
+{
+  "name": "dividend-etf-planner",
+  "version": "0.1.0",
+  "description": "Static dividend ETF investment planner.",
+  "author": "Steven Zheng",
+  "homepage": "https://azoicera.github.io/etf-planner/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azoicera/etf-planner.git"
+  },
+  "bugs": {
+    "url": "https://github.com/azoicera/etf-planner/issues"
+  },
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "serve": "python3 -m http.server 8080"
+  },
+  "keywords": [
+    "etf",
+    "dividend",
+    "planner",
+    "static-html",
+    "红利ETF",
+    "定投"
+  ],
+  "license": "MIT"
+}
